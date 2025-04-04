@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from './AppSidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RaLogo } from './RaLogo';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -17,11 +18,16 @@ export function DashboardLayout({ children, title, description }: DashboardLayou
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <header className="bg-white border-b border-slate-200 py-4 px-6">
-            <div>
-              <h1 className="text-2xl font-bold text-finance-primary">{title}</h1>
-              {description && (
-                <p className="text-finance-text-secondary mt-1">{description}</p>
-              )}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-finance-primary">{title}</h1>
+                {description && (
+                  <p className="text-finance-text-secondary mt-1">{description}</p>
+                )}
+              </div>
+              <div>
+                <RaLogo variant="icon" size="sm" />
+              </div>
             </div>
           </header>
 
@@ -30,9 +36,12 @@ export function DashboardLayout({ children, title, description }: DashboardLayou
           </main>
           
           <footer className="bg-white border-t border-slate-200 py-3 px-6">
-            <p className="text-sm text-finance-text-secondary">
-              © {new Date().getFullYear()} Fin-Insight Navigator • Plataforma de Inteligência Financeira
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-finance-text-secondary">
+                © {new Date().getFullYear()} Fin-Insight Navigator • Plataforma de Inteligência Financeira
+              </p>
+              <RaLogo variant="full" size="sm" />
+            </div>
           </footer>
         </div>
       </div>

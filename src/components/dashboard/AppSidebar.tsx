@@ -13,6 +13,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { BarChart3, LineChart, TrendingUp, Globe, BarChart, BookOpen } from "lucide-react";
+import { RaLogo } from './RaLogo';
 
 // Menu items configuration
 const modules = [
@@ -46,10 +47,16 @@ const modules = [
 export function AppSidebar() {
   return (
     <Sidebar className="border-r border-slate-200">
-      <div className="flex items-center h-16 px-4 border-b border-slate-200 bg-finance-primary">
-        <h1 className="text-lg font-bold text-white truncate">
-          Fin-Insight
-        </h1>
+      <div className="flex items-center h-16 px-4 border-b border-slate-200 bg-black">
+        <div className="flex items-center">
+          <RaLogo variant="full" size="md" />
+          <div className="ml-2 text-lg font-bold text-white truncate">
+            Fin-Insight
+          </div>
+        </div>
+        <div className="ml-auto">
+          <SidebarTrigger />
+        </div>
       </div>
       <SidebarContent>
         <SidebarGroup>
@@ -78,7 +85,7 @@ export function AppSidebar() {
                 <p className="text-finance-text-secondary mt-1">Acesse nossa documentação para obter suporte.</p>
                 <Link 
                   to="/documentacao" 
-                  className="flex items-center mt-2 text-finance-secondary hover:underline"
+                  className="flex items-center mt-2 text-[#40E0D0] hover:underline"
                 >
                   <BookOpen className="w-3 h-3 mr-1" />
                   <span>Ver documentação</span>

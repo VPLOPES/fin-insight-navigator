@@ -8,7 +8,7 @@ export function CustomizationCard() {
     <Card className="bg-finance-neutral/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Code className="h-5 w-5 text-finance-primary" />
+          <Code className="h-5 w-5 text-[#40E0D0]" />
           Customização
         </CardTitle>
         <CardDescription>
@@ -16,7 +16,7 @@ export function CustomizationCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-2 space-y-4">
-        <div className="border-l-2 border-finance-primary pl-4">
+        <div className="border-l-2 border-[#40E0D0] pl-4">
           <h3 className="font-medium text-finance-text-primary flex items-center gap-2">
             <Database className="h-4 w-4" /> Fontes de Dados
           </h3>
@@ -26,7 +26,7 @@ export function CustomizationCard() {
           </p>
         </div>
         
-        <div className="border-l-2 border-finance-primary pl-4">
+        <div className="border-l-2 border-[#40E0D0] pl-4">
           <h3 className="font-medium text-finance-text-primary flex items-center gap-2">
             <GitBranch className="h-4 w-4" /> Novas Funcionalidades
           </h3>

@@ -57,7 +57,7 @@ export function CapabilitiesSection() {
     {
       title: "Dashboards de Performance Financeira",
       description: "Painéis interativos que apresentam dados financeiros precisos e atualizados, auxiliando na tomada de decisões estratégicas.",
-      icon: <BarChart size={24} />
+      icon: <BarChart3 size={24} />
     },
     {
       title: "Simulação de Cenários",

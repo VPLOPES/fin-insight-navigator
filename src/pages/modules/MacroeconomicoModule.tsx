@@ -1,15 +1,17 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
+import { BacenService, ExchangeRate } from '@/services/bacen-api';
+import { formatCurrency, formatPercentage, formatNumber } from '@/lib/chart-utils';
+import { useQuery } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
 
 // Mock data for macroeconomic indicators
 const economicIndicators = [
   { id: 1, title: 'PIB Brasil (var. anual)', value: 2.8, change: 0.3, format: 'percentage', suffix: '%', info: 'Variação do PIB em relação ao ano anterior' },
   { id: 2, title: 'Inflação (IPCA)', value: 4.2, change: -0.5, format: 'percentage', suffix: '%' },
   { id: 3, title: 'Taxa Selic', value: 10.75, change: -0.25, format: 'percentage', suffix: '%' },
-  { id: 4, title: 'Taxa de Câmbio (BRL/USD)', value: 5.13, change: 1.8 },
   { id: 5, title: 'Dívida/PIB', value: 78.3, change: 0.8, format: 'percentage', suffix: '%' },
   { id: 6, title: 'Desemprego', value: 7.8, change: -0.4, format: 'percentage', suffix: '%' },
 ];
@@ -65,70 +67,123 @@ const tradeBalanceData = [
   { mes: 'Dez', exportacoes: 26.5, importacoes: 20.8, saldo: 5.7 },
 ];
 
-const IndicadoresTab = () => (
-  <>
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {economicIndicators.map((indicator) => (
-        <MetricCard
-          key={indicator.id}
-          title={indicator.title}
-          value={indicator.value}
-          change={indicator.change}
-          format={indicator.format as any}
-          suffix={indicator.suffix}
-          info={indicator.info}
-        />
-      ))}
-    </div>
-    
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      <ChartCard
-        title="Índices de Inflação"
-        type="line"
-        data={inflationData}
-        xAxisDataKey="mes"
-        categories={[
-          { key: 'ipca', name: 'IPCA', color: '#0D326F' },
-          { key: 'igpm', name: 'IGP-M', color: '#F95738' },
-        ]}
-      />
-      
-      <ChartCard
-        title="Evolução da Taxa Selic"
-        type="area"
-        data={interestRateData}
-        xAxisDataKey="data"
-        categories={[
-          { key: 'taxa', name: 'Taxa Selic (%)', color: '#0E9AA7' },
-        ]}
-      />
-    </div>
+const IndicadoresTab = () => {
+  const { data: exchangeRates, isLoading, error } = useQuery({
+    queryKey: ['exchangeRates'],
+    queryFn: () => BacenService.getExchangeRates(30),
+  });
 
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      <ChartCard
-        title="Contribuição por Setor no PIB"
-        type="bar"
-        data={gdpSectorData}
-        xAxisDataKey="setor"
-        categories={[
-          { key: 'contribuicao', name: 'Contribuição (%)', color: '#3F72AF' },
-        ]}
-      />
+  const calculateExchangeRateChange = () => {
+    if (!exchangeRates || exchangeRates.length < 2) return 0;
+    
+    const lastValue = exchangeRates[exchangeRates.length - 1].value;
+    const previousValue = exchangeRates[exchangeRates.length - 2].value;
+    
+    return ((lastValue - previousValue) / previousValue) * 100;
+  };
+
+  const exchangeRateChartData = React.useMemo(() => {
+    if (!exchangeRates) return [];
+    
+    return exchangeRates.map(item => ({
+      data: item.date,
+      taxa: item.value
+    }));
+  }, [exchangeRates]);
+
+  const currentExchangeRate = exchangeRates && exchangeRates.length > 0 
+    ? exchangeRates[exchangeRates.length - 1].value 
+    : 0;
+
+  const exchangeRateChange = calculateExchangeRateChange();
+
+  return (
+    <>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {economicIndicators.map((indicator) => (
+          <MetricCard
+            key={indicator.id}
+            title={indicator.title}
+            value={indicator.value}
+            change={indicator.change}
+            format={indicator.format as any}
+            suffix={indicator.suffix}
+            info={indicator.info}
+          />
+        ))}
+
+        <MetricCard
+          key="exchange-rate"
+          title="Taxa de Câmbio (BRL/USD)"
+          value={isLoading ? "Carregando..." : currentExchangeRate}
+          change={exchangeRateChange}
+          info="Fonte: Banco Central do Brasil (PTAX venda)"
+          format="number"
+        />
+      </div>
       
-      <ChartCard
-        title="Balança Comercial (US$ bilhões)"
-        type="line"
-        data={tradeBalanceData}
-        xAxisDataKey="mes"
-        categories={[
-          { key: 'exportacoes', name: 'Exportações', color: '#00A878' },
-          { key: 'importacoes', name: 'Importações', color: '#F95738' },
-          { key: 'saldo', name: 'Saldo', color: '#3F72AF' },
-        ]}
-      />
-    </div>
-  </>
-);
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <ChartCard
+          title="Índices de Inflação"
+          type="line"
+          data={inflationData}
+          xAxisDataKey="mes"
+          categories={[
+            { key: 'ipca', name: 'IPCA', color: '#0D326F' },
+            { key: 'igpm', name: 'IGP-M', color: '#F95738' },
+          ]}
+        />
+        
+        <ChartCard
+          title="Evolução da Taxa Selic"
+          type="area"
+          data={interestRateData}
+          xAxisDataKey="data"
+          categories={[
+            { key: 'taxa', name: 'Taxa Selic (%)', color: '#0E9AA7' },
+          ]}
+        />
+      </div>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <ChartCard
+          title="Contribuição por Setor no PIB"
+          type="bar"
+          data={gdpSectorData}
+          xAxisDataKey="setor"
+          categories={[
+            { key: 'contribuicao', name: 'Contribuição (%)', color: '#3F72AF' },
+          ]}
+        />
+        
+        <ChartCard
+          title="Balança Comercial (US$ bilhões)"
+          type="line"
+          data={tradeBalanceData}
+          xAxisDataKey="mes"
+          categories={[
+            { key: 'exportacoes', name: 'Exportações', color: '#00A878' },
+            { key: 'importacoes', name: 'Importações', color: '#F95738' },
+            { key: 'saldo', name: 'Saldo', color: '#3F72AF' },
+          ]}
+        />
+      </div>
+
+      <div className="mt-6">
+        <ChartCard
+          title="Evolução da Taxa de Câmbio BRL/USD (últimos 30 dias)"
+          type="line"
+          data={exchangeRateChartData}
+          xAxisDataKey="data"
+          categories={[
+            { key: 'taxa', name: 'BRL/USD', color: '#0D326F' },
+          ]}
+          isLoading={isLoading}
+        />
+      </div>
+    </>
+  );
+};
 
 export default function MacroeconomicoModule() {
   return (

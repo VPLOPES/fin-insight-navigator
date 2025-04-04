@@ -1,16 +1,16 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, AreaChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar, Line, Area } from 'recharts';
+import { BarChart, LineChart, AreaChart, PieChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar, Line, Area, Pie, Cell } from 'recharts';
 import { Info } from "lucide-react";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ChartCardProps {
   title: string;
   data: any[];
-  type: 'line' | 'bar' | 'area';
+  type: 'line' | 'bar' | 'area' | 'pie';
   categories: { key: string; name: string; color: string }[];
-  xAxisDataKey: string;
+  xAxisDataKey?: string;
   info?: string;
   className?: string;
   height?: number;
@@ -112,6 +112,30 @@ export function ChartCard({
               />
             ))}
           </AreaChart>
+        );
+      case 'pie':
+        return (
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey={categories[0].key}
+              nameKey={xAxisDataKey || 'name'}
+              cx="50%"
+              cy="50%"
+              outerRadius={80}
+              labelLine={true}
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+            >
+              {data.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={categories[index % categories.length]?.color || `hsl(${index * 45}, 70%, 50%)`} 
+                />
+              ))}
+            </Pie>
+            <Legend />
+            <Tooltip />
+          </PieChart>
         );
       default:
         return null;

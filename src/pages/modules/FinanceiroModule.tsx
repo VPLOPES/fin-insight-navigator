@@ -1,11 +1,15 @@
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
+import { ChartLoading } from '@/components/dashboard/ChartLoading';
 import { formatCurrency } from '@/lib/chart-utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 // Mock data
 const financialMetrics = [
@@ -15,14 +19,20 @@ const financialMetrics = [
   { id: 4, title: 'Margem EBITDA', value: 27.3, change: 3.5, suffix: '%' },
 ];
 
-const quarterlyData = [
-  { quarter: 'Q1/23', receita: 10200000, ebitda: 2700000, lucro: 1800000 },
-  { quarter: 'Q2/23', receita: 10800000, ebitda: 2900000, lucro: 1950000 },
-  { quarter: 'Q3/23', receita: 11500000, ebitda: 3100000, lucro: 2100000 },
-  { quarter: 'Q4/23', receita: 12300000, ebitda: 3400000, lucro: 2300000 },
-  { quarter: 'Q1/24', receita: 11000000, ebitda: 3000000, lucro: 2050000 },
-  { quarter: 'Q2/24', receita: 11800000, ebitda: 3200000, lucro: 2200000 },
-];
+const quarterlyData = {
+  '2023': [
+    { quarter: 'Q1/23', receita: 10200000, ebitda: 2700000, lucro: 1800000 },
+    { quarter: 'Q2/23', receita: 10800000, ebitda: 2900000, lucro: 1950000 },
+    { quarter: 'Q3/23', receita: 11500000, ebitda: 3100000, lucro: 2100000 },
+    { quarter: 'Q4/23', receita: 12300000, ebitda: 3400000, lucro: 2300000 },
+  ],
+  '2024': [
+    { quarter: 'Q1/24', receita: 11000000, ebitda: 3000000, lucro: 2050000 },
+    { quarter: 'Q2/24', receita: 11800000, ebitda: 3200000, lucro: 2200000 },
+    { quarter: 'Q3/24', receita: 12500000, ebitda: 3500000, lucro: 2400000 },
+    { quarter: 'Q4/24', receita: 13200000, ebitda: 3800000, lucro: 2650000 },
+  ],
+};
 
 const liquidityData = [
   { name: 'Liquidez Corrente', value: 1.8 },
@@ -37,6 +47,27 @@ const debtData = [
 
 // Componente para o módulo Financeiro Corporativo
 const FinanceiroModule = () => {
+  const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
+  const [dataYear, setDataYear] = useState<'2023' | '2024'>('2024');
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeMetrics, setActiveMetrics] = useState<string[]>(['receita', 'ebitda', 'lucro']);
+
+  const handleRefreshData = useCallback(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Simular carregamento de dados
+  }, []);
+
+  const toggleMetric = useCallback((metric: string) => {
+    setActiveMetrics(prev => {
+      if (prev.includes(metric)) {
+        return prev.filter(m => m !== metric);
+      }
+      return [...prev, metric];
+    });
+  }, []);
+
   // Página de Rentabilidade
   const rentabilidadeContent = (
     <div className="space-y-6">
@@ -118,6 +149,7 @@ const FinanceiroModule = () => {
                 title=""
                 type="pie"
                 data={debtData}
+                xAxisDataKey="name"
                 categories={[
                   { key: 'value', name: 'Percentual', color: '#0D326F' },
                 ]}
@@ -171,43 +203,102 @@ const FinanceiroModule = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Desempenho Trimestral</CardTitle>
-          <CardDescription>
-            Evolução das principais métricas financeiras (em {formatCurrency(1000000)})
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Desempenho Trimestral</CardTitle>
+            <CardDescription>
+              Evolução das principais métricas financeiras (em {formatCurrency(1000000)})
+            </CardDescription>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Select value={dataYear} onValueChange={(value: any) => setDataYear(value)}>
+              <SelectTrigger className="w-24">
+                <SelectValue placeholder="Ano" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2023">2023</SelectItem>
+                <SelectItem value="2024">2024</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={chartType} onValueChange={(value: any) => setChartType(value)}>
+              <SelectTrigger className="w-24">
+                <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bar">Barras</SelectItem>
+                <SelectItem value="line">Linhas</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="icon" onClick={handleRefreshData}>
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div style={{ height: '300px' }}>
-            <ChartCard
-              title=""
-              type="bar"
-              data={quarterlyData}
-              xAxisDataKey="quarter"
-              categories={[
-                { key: 'receita', name: 'Receita', color: '#0D326F' },
-                { key: 'ebitda', name: 'EBITDA', color: '#00A878' },
-                { key: 'lucro', name: 'Lucro Líquido', color: '#DD571C' },
-              ]}
-              height={300}
-            />
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                variant={activeMetrics.includes('receita') ? "default" : "outline"} 
+                size="sm"
+                onClick={() => toggleMetric('receita')}
+              >
+                Receita
+              </Button>
+              <Button 
+                variant={activeMetrics.includes('ebitda') ? "default" : "outline"} 
+                size="sm"
+                onClick={() => toggleMetric('ebitda')}
+              >
+                EBITDA
+              </Button>
+              <Button 
+                variant={activeMetrics.includes('lucro') ? "default" : "outline"} 
+                size="sm"
+                onClick={() => toggleMetric('lucro')}
+              >
+                Lucro Líquido
+              </Button>
+            </div>
+            
+            <div style={{ height: '300px' }}>
+              {isLoading ? (
+                <ChartLoading height={300} />
+              ) : (
+                <ChartCard
+                  title=""
+                  type={chartType}
+                  data={quarterlyData[dataYear]}
+                  xAxisDataKey="quarter"
+                  categories={[
+                    ...(activeMetrics.includes('receita') ? [{ key: 'receita', name: 'Receita', color: '#0D326F' }] : []),
+                    ...(activeMetrics.includes('ebitda') ? [{ key: 'ebitda', name: 'EBITDA', color: '#00A878' }] : []),
+                    ...(activeMetrics.includes('lucro') ? [{ key: 'lucro', name: 'Lucro Líquido', color: '#DD571C' }] : []),
+                  ]}
+                  height={300}
+                />
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
     </div>
   );
 
+  const tabs = [
+    { id: 'principal', label: 'Visão Geral', content: principalContent },
+    { id: 'rentabilidade', label: 'Rentabilidade', content: rentabilidadeContent },
+    { id: 'liquidez', label: 'Liquidez', content: liquidezContent },
+    { id: 'endividamento', label: 'Endividamento', content: endividamentoContent },
+  ];
+
   return (
     <ModuleDashboard
       title="Financeiro Corporativo"
       description="Análise de indicadores financeiros e avaliação de performance"
-      tabs={[
-        { id: 'principal', label: 'Visão Geral', content: principalContent },
-        { id: 'rentabilidade', label: 'Rentabilidade', content: rentabilidadeContent },
-        { id: 'liquidez', label: 'Liquidez', content: liquidezContent },
-        { id: 'endividamento', label: 'Endividamento', content: endividamentoContent },
-      ]}
-    />
+      tabs={tabs}
+    >
+      {null}
+    </ModuleDashboard>
   );
 };
 

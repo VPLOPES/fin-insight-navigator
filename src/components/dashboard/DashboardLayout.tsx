@@ -4,40 +4,54 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from './AppSidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RaLogo } from './RaLogo';
+import { Button } from "@/components/ui/button";
+import { MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 
 interface DashboardLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
   title: string;
   description?: string;
 }
 
 export function DashboardLayout({ children, title, description }: DashboardLayoutProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <header className="bg-white border-b border-slate-200 py-4 px-6">
+          <header className="bg-card border-b border-border py-4 px-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-finance-primary">{title}</h1>
                 {description && (
-                  <p className="text-finance-text-secondary mt-1">{description}</p>
+                  <p className="text-muted-foreground mt-1">{description}</p>
                 )}
               </div>
-              <div>
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+                  className="rounded-full"
+                >
+                  {theme === 'dark' ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+                  <span className="sr-only">Alternar tema</span>
+                </Button>
                 <RaLogo variant="icon" size="sm" />
               </div>
             </div>
           </header>
 
-          <main className="flex-1 overflow-auto p-6">
+          <main className="flex-1 overflow-auto p-6 space-y-6 bg-background">
             {children}
           </main>
           
-          <footer className="bg-white border-t border-slate-200 py-3 px-6">
+          <footer className="bg-card border-t border-border py-3 px-6">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-finance-text-secondary">
+              <p className="text-sm text-muted-foreground">
                 © {new Date().getFullYear()} Fin-Insight Navigator • Plataforma de Inteligência Financeira
               </p>
               <RaLogo variant="full" size="sm" />
@@ -58,16 +72,16 @@ export function ModuleDashboard({
   return (
     <DashboardLayout title={title} description={description}>
       {tabs.length > 0 ? (
-        <Tabs defaultValue={tabs[0].id} className="space-y-4">
-          <TabsList>
+        <Tabs defaultValue={tabs[0].id} className="space-y-6">
+          <TabsList className="bg-muted/50 p-1">
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id}>
+              <TabsTrigger key={tab.id} value={tab.id} className="data-[state=active]:bg-white dark:data-[state=active]:bg-muted data-[state=active]:shadow-sm">
                 {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>
           {tabs.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id} className="space-y-4">
+            <TabsContent key={tab.id} value={tab.id} className="space-y-6">
               {tab.content}
             </TabsContent>
           ))}

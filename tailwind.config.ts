@@ -63,16 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom finance platform colors
+				// Custom finance platform colors with theme support
 				finance: {
-					primary: '#0D326F',     // Navy blue
-					secondary: '#0E9AA7',   // Teal
-					accent: '#3F72AF',      // Lighter blue
-					positive: '#00A878',    // Green for positive values
-					negative: '#F95738',    // Red for negative values
-					neutral: '#F8F9FA',     // Light background
-					'text-primary': '#2D3748', // Dark text
-					'text-secondary': '#718096', // Medium text
+					primary: 'hsl(var(--ra-blue-dark))',  
+					secondary: 'hsl(var(--ra-teal))',   
+					accent: 'hsl(var(--ra-blue-medium))',
+					positive: '#00A878',    
+					negative: '#F95738',    
+					neutral: '#F8F9FA',     
+					'text-primary': 'hsl(var(--foreground))', 
+					'text-secondary': 'hsl(var(--muted-foreground))', 
 				}
 			},
 			borderRadius: {
@@ -96,11 +96,24 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'pulse-gentle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'pulse-gentle': 'pulse-gentle 2s infinite'
+			},
+			boxShadow: {
+				'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
 			}
 		}
 	},

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, TrendingDown, TrendingUp } from "lucide-react";
+import { Info, TrendingDown, TrendingUp, DollarSign, PercentIcon, BarChart3, PieChart } from "lucide-react";
 import { cn } from '@/lib/utils';
 
 interface MetricCardProps {
@@ -15,6 +15,7 @@ interface MetricCardProps {
   prefix?: string;
   suffix?: string;
   format?: "currency" | "percentage" | "number";
+  icon?: "currency" | "percentage" | "chart" | "pie";
 }
 
 export function MetricCard({
@@ -26,7 +27,8 @@ export function MetricCard({
   className,
   prefix = "",
   suffix = "",
-  format = "number"
+  format = "number",
+  icon
 }: MetricCardProps) {
   const formattedValue = React.useMemo(() => {
     if (typeof value === 'number') {
@@ -46,11 +48,29 @@ export function MetricCard({
 
   const displayValue = `${prefix}${formattedValue}${suffix}`;
 
+  const getIcon = () => {
+    if (!icon) {
+      // Auto-detect icon based on format if not specified
+      if (format === 'currency') return <DollarSign className="h-5 w-5 text-finance-primary" />;
+      if (format === 'percentage') return <PercentIcon className="h-5 w-5 text-finance-primary" />;
+      return null;
+    }
+    
+    switch(icon) {
+      case 'currency': return <DollarSign className="h-5 w-5 text-finance-primary" />;
+      case 'percentage': return <PercentIcon className="h-5 w-5 text-finance-primary" />;
+      case 'chart': return <BarChart3 className="h-5 w-5 text-finance-primary" />;
+      case 'pie': return <PieChart className="h-5 w-5 text-finance-primary" />;
+      default: return null;
+    }
+  };
+
   return (
-    <Card className={cn("overflow-hidden", className)}>
+    <Card className={cn("overflow-hidden shadow-md hover:shadow-lg transition-shadow", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">
-          {title}
+        <CardTitle className="text-sm font-medium flex items-center gap-2">
+          {getIcon()}
+          <span>{title}</span>
           {info && (
             <TooltipProvider>
               <Tooltip>
@@ -66,12 +86,14 @@ export function MetricCard({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{displayValue}</div>
-        {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+        <div className="text-2xl font-bold mt-2">{displayValue}</div>
+        {description && <p className="text-xs text-muted-foreground mt-2">{description}</p>}
         {typeof change === 'number' && (
           <div className={cn(
-            "flex items-center text-xs font-medium mt-2",
-            change > 0 ? "text-finance-positive" : change < 0 ? "text-finance-negative" : "text-muted-foreground"
+            "flex items-center text-xs font-medium mt-3 p-1 rounded-md",
+            change > 0 ? "text-finance-positive bg-finance-positive/10" : 
+            change < 0 ? "text-finance-negative bg-finance-negative/10" : 
+            "text-muted-foreground bg-muted/50"
           )}>
             {change > 0 ? (
               <TrendingUp className="mr-1 h-3 w-3" />

@@ -1,10 +1,11 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -22,8 +23,8 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 220 45% 56.1%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -35,20 +36,20 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Tema personalizado para RA Fin-Insight */
+    --ra-blue-dark: 212 75% 20%;
+    --ra-blue-medium: 200 70% 35%;
+    --ra-blue-light: 196 85% 48%;
+    --ra-teal: 181 97% 36%;
+    --ra-teal-light: 178 75% 72%;
   }
 
   .dark {
@@ -70,7 +71,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 181 97% 36%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -79,9 +80,10 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 181 97% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -96,6 +98,41 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
+}
+
+@layer components {
+  .chart-container {
+    @apply pt-2 transition-all;
+  }
+
+  .chart-container:hover {
+    @apply scale-[1.01];
+  }
+}
+
+/* Corrigindo os erros de TypeScript nos módulos */
+.module-tabs .data-[state=active] {
+  @apply bg-background shadow-sm font-medium;
+}
+
+/* Classes customizadas para o tema RA Fin-Insight */
+.bg-ra-blue-dark {
+  @apply bg-[hsl(var(--ra-blue-dark))];
+}
+
+.bg-ra-teal {
+  @apply bg-[hsl(var(--ra-teal))];
+}
+
+.text-ra-teal {
+  @apply text-[hsl(var(--ra-teal))];
+}
+
+/* Estilos para botões em destaque */
+.btn-highlight {
+  @apply bg-[hsl(var(--ra-teal))] text-white hover:bg-[hsl(var(--ra-teal))/90] 
+         shadow-md hover:shadow-lg transition-all transform hover:translate-y-[-1px]
+         focus:ring-2 focus:ring-[hsl(var(--ra-teal))/50] focus:ring-offset-2;
 }

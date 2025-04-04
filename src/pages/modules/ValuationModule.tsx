@@ -1,260 +1,322 @@
 
-import React from 'react';
-import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState } from 'react';
+import { ModuleDashboard } from "@/components/dashboard/DashboardLayout";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ArrowRight, Calculator, BarChart3, Settings } from "lucide-react";
 
-// Mock data
-const valuationMetrics = [
-  { id: 1, title: 'Valor da Empresa', value: 450000000, format: 'currency' },
-  { id: 2, title: 'Valor por Ação', value: 45.8, change: 5.2 },
-  { id: 3, title: 'P/L', value: 12.5, change: -1.8 },
-  { id: 4, title: 'EV/EBITDA', value: 8.7, change: -0.5 },
+// Dados de exemplo para o módulo de Valuation
+const historicalFCF = [
+  { year: '2018', fcf: 4200000 },
+  { year: '2019', fcf: 4500000 },
+  { year: '2020', fcf: 3800000 },
+  { year: '2021', fcf: 5100000 },
+  { year: '2022', fcf: 5800000 },
+  { year: '2023', fcf: 6200000 },
 ];
 
-const dcfData = [
-  { ano: '2024', fluxo: 42500000 },
-  { ano: '2025', fluxo: 46800000 },
-  { ano: '2026', fluxo: 51400000 },
-  { ano: '2027', fluxo: 56500000 },
-  { ano: '2028', fluxo: 62100000 },
-  { ano: 'Perpetuidade', fluxo: 310500000 },
+const fcfProjection = [
+  { year: '2023', fcf: 6200000 },
+  { year: '2024', fcf: 6800000 },
+  { year: '2025', fcf: 7500000 },
+  { year: '2026', fcf: 8200000 },
+  { year: '2027', fcf: 9000000 },
+  { year: '2028', fcf: 9800000 },
 ];
 
-const multiplosData = [
-  { empresa: 'Empresa A', pl: 14.2, evebitda: 9.5 },
-  { empresa: 'Empresa B', pl: 12.8, evebitda: 8.2 },
-  { empresa: 'Empresa C', pl: 11.5, evebitda: 7.8 },
-  { empresa: 'Empresa D', pl: 13.7, evebitda: 9.1 },
-  { empresa: 'Empresa E', pl: 10.9, evebitda: 7.3 },
-  { empresa: 'Média', pl: 12.6, evebitda: 8.4 },
-  { empresa: 'Sua Empresa', pl: 12.5, evebitda: 8.7 },
+const multiples = [
+  { name: 'P/L', company: 15.8, sector: 14.2, industry: 16.5 },
+  { name: 'P/VPA', company: 2.3, sector: 2.1, industry: 2.5 },
+  { name: 'EV/EBITDA', company: 8.6, sector: 7.9, industry: 8.8 },
+  { name: 'EV/EBIT', company: 11.2, sector: 10.5, industry: 11.8 },
+  { name: 'ROIC', company: 12.5, sector: 11.8, industry: 13.2 },
 ];
 
-const sensibilidadeData = [
-  { wacc: '10.0%', g: '2.0%', valor: 412500000 },
-  { wacc: '10.0%', g: '2.5%', valor: 425000000 },
-  { wacc: '10.0%', g: '3.0%', valor: 437500000 },
-  { wacc: '10.5%', g: '2.0%', valor: 400000000 },
-  { wacc: '10.5%', g: '2.5%', valor: 412500000 },
-  { wacc: '10.5%', g: '3.0%', valor: 425000000 },
-  { wacc: '11.0%', g: '2.0%', valor: 387500000 },
-  { wacc: '11.0%', g: '2.5%', valor: 400000000 },
-  { wacc: '11.0%', g: '3.0%', valor: 412500000 },
-];
+const multiplesBenchmark = multiples.map(item => ({
+  name: item.name,
+  company: item.company,
+  benchmark: (item.sector + item.industry) / 2
+}));
 
-// Componente para o módulo de Valuation
-const ValuationModule = () => {
-  // Conteúdo da tab de DCF
-  const dcfContent = (
+const ValuationModule: React.FC = () => {
+  const [growthRate, setGrowthRate] = useState(5);
+  const [wacc, setWacc] = useState(10);
+  const [perpetuityGrowth, setPerpetuityGrowth] = useState(3);
+  
+  // Calcular o valor intrínseco baseado nas entradas (simulação simples)
+  const calculateIntrinsicValue = () => {
+    const terminalValue = fcfProjection[fcfProjection.length - 1].fcf * (1 + perpetuityGrowth / 100) / (wacc / 100 - perpetuityGrowth / 100);
+    
+    let pvFCF = 0;
+    for (let i = 0; i < fcfProjection.length; i++) {
+      pvFCF += fcfProjection[i].fcf / Math.pow(1 + wacc / 100, i + 1);
+    }
+    
+    const pvTV = terminalValue / Math.pow(1 + wacc / 100, fcfProjection.length);
+    
+    return {
+      enterpriseValue: pvFCF + pvTV,
+      pvFCF: pvFCF,
+      pvTV: pvTV
+    };
+  };
+  
+  const valuationResult = calculateIntrinsicValue();
+  
+  // Calcular métricas de sensibilidade
+  const sensitivityWacc = [
+    { wacc: (wacc - 2) + "%", value: calculateIntrinsicValue().enterpriseValue * 1.25 },
+    { wacc: (wacc - 1) + "%", value: calculateIntrinsicValue().enterpriseValue * 1.12 },
+    { wacc: wacc + "%", value: calculateIntrinsicValue().enterpriseValue },
+    { wacc: (wacc + 1) + "%", value: calculateIntrinsicValue().enterpriseValue * 0.9 },
+    { wacc: (wacc + 2) + "%", value: calculateIntrinsicValue().enterpriseValue * 0.82 },
+  ];
+
+  const dcfDashboardContent = (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard title="Taxa de Crescimento" value={9.5} suffix="%" />
-        <MetricCard title="WACC" value={10.5} suffix="%" />
-        <MetricCard title="Taxa Perpetuidade" value={2.5} suffix="%" />
-        <MetricCard title="Valor Terminal" value={310500000} format="currency" />
+      <div className="grid gap-4 md:grid-cols-4">
+        <MetricCard
+          title="Valor da Empresa"
+          value={valuationResult.enterpriseValue}
+          format="currency"
+          icon="currency"
+        />
+        <MetricCard
+          title="VP dos FCLs"
+          value={valuationResult.pvFCF}
+          format="currency"
+          icon="currency"
+        />
+        <MetricCard
+          title="VP do Valor Terminal"
+          value={valuationResult.pvTV}
+          format="currency" 
+          icon="currency"
+        />
+        <MetricCard
+          title="% Valor Terminal"
+          value={(valuationResult.pvTV / valuationResult.enterpriseValue) * 100}
+          format="percentage"
+          suffix="%"
+          icon="percentage"
+        />
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Fluxo de Caixa Projetado</CardTitle>
-          <CardDescription>Valores em reais</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div style={{ height: '300px' }}>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle className="text-lg">Fluxo de Caixa Histórico</CardTitle>
+            <CardDescription>Fluxos de caixa livres dos últimos 6 anos</CardDescription>
+          </CardHeader>
+          <CardContent>
             <ChartCard
               title=""
               type="bar"
-              data={dcfData}
-              xAxisDataKey="ano"
-              categories={[
-                { key: 'fluxo', name: 'Fluxo de Caixa', color: '#0D326F' },
-              ]}
-              height={300}
+              data={historicalFCF}
+              xAxisDataKey="year"
+              categories={[{ key: 'fcf', name: 'FCL', color: '#0D326F' }]}
+              height={250}
+              formatValue="currency"
+              allowTypeChange
+            />
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-md">
+          <CardHeader>
+            <CardTitle className="text-lg">Projeção de Fluxo de Caixa</CardTitle>
+            <CardDescription>Projeção de FCL para os próximos 5 anos</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartCard
+              title=""
+              type="line"
+              data={fcfProjection}
+              xAxisDataKey="year"
+              categories={[{ key: 'fcf', name: 'FCL Projetado', color: '#0E9AA7' }]}
+              height={250}
+              formatValue="currency"
+              allowTypeChange
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle className="text-lg">Parâmetros do Modelo DCF</CardTitle>
+          <CardDescription>Ajuste as premissas para análise de sensibilidade</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <label className="text-sm font-medium">Taxa de Crescimento</label>
+                <span className="text-sm">{growthRate}%</span>
+              </div>
+              <Slider
+                value={[growthRate]}
+                min={0}
+                max={20}
+                step={0.5}
+                onValueChange={value => setGrowthRate(value[0])}
+                className="mt-2"
+              />
+              <p className="text-xs text-muted-foreground">
+                Taxa de crescimento anual dos fluxos de caixa projetados
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <label className="text-sm font-medium">WACC</label>
+                <span className="text-sm">{wacc}%</span>
+              </div>
+              <Slider
+                value={[wacc]}
+                min={5}
+                max={20}
+                step={0.5}
+                onValueChange={value => setWacc(value[0])}
+                className="mt-2"
+              />
+              <p className="text-xs text-muted-foreground">
+                Custo médio ponderado de capital
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <label className="text-sm font-medium">Crescimento Perpétuo</label>
+                <span className="text-sm">{perpetuityGrowth}%</span>
+              </div>
+              <Slider
+                value={[perpetuityGrowth]}
+                min={0}
+                max={5}
+                step={0.1}
+                onValueChange={value => setPerpetuityGrowth(value[0])}
+                className="mt-2"
+              />
+              <p className="text-xs text-muted-foreground">
+                Taxa de crescimento na perpetuidade
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6">
+            <h4 className="text-sm font-medium mb-3">Análise de Sensibilidade - WACC</h4>
+            <ChartCard
+              title=""
+              type="bar"
+              data={sensitivityWacc}
+              xAxisDataKey="wacc"
+              categories={[{ key: 'value', name: 'Valor da Empresa', color: '#3F72AF' }]}
+              height={200}
+              formatValue="currency"
             />
           </div>
         </CardContent>
+        <CardFooter>
+          <Button variant="outline" className="btn-highlight ml-auto">
+            <Calculator className="mr-2 h-4 w-4" />
+            Recalcular Valuation
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
 
-  // Conteúdo da tab de Múltiplos
-  const multiplosContent = (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Comparação de Múltiplos</CardTitle>
-          <CardDescription>Comparativo com empresas do setor</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="pb-2 font-medium text-sm">Empresa</th>
-                  <th className="pb-2 font-medium text-sm">P/L</th>
-                  <th className="pb-2 font-medium text-sm">EV/EBITDA</th>
-                </tr>
-              </thead>
-              <tbody>
-                {multiplosData.map((item, index) => (
-                  <tr 
-                    key={index} 
-                    className={`border-b ${item.empresa === 'Sua Empresa' ? 'bg-slate-50' : ''} ${item.empresa === 'Média' ? 'font-medium' : ''}`}
-                  >
-                    <td className="py-2">{item.empresa}</td>
-                    <td className="py-2">{item.pl.toFixed(1)}</td>
-                    <td className="py-2">{item.evebitda.toFixed(1)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  // Conteúdo da tab de Sensibilidade
-  const sensibilidadeContent = (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Análise de Sensibilidade</CardTitle>
-          <CardDescription>Impacto de WACC e Taxa de Crescimento no Valor</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left border-b">
-                  <th className="pb-2 font-medium text-sm">WACC / g</th>
-                  <th className="pb-2 font-medium text-sm">g = 2.0%</th>
-                  <th className="pb-2 font-medium text-sm">g = 2.5%</th>
-                  <th className="pb-2 font-medium text-sm">g = 3.0%</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-2 font-medium">10.0%</td>
-                  <td className="py-2">R$ 412.5M</td>
-                  <td className="py-2">R$ 425.0M</td>
-                  <td className="py-2">R$ 437.5M</td>
-                </tr>
-                <tr className="border-b bg-slate-50">
-                  <td className="py-2 font-medium">10.5%</td>
-                  <td className="py-2">R$ 400.0M</td>
-                  <td className="py-2">R$ 412.5M</td>
-                  <td className="py-2">R$ 425.0M</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-2 font-medium">11.0%</td>
-                  <td className="py-2">R$ 387.5M</td>
-                  <td className="py-2">R$ 400.0M</td>
-                  <td className="py-2">R$ 412.5M</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  // Conteúdo principal (overview)
-  const principalContent = (
+  const multiplosDashboardContent = (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {valuationMetrics.map((metric) => (
-          <MetricCard
-            key={metric.id}
-            title={metric.title}
-            value={metric.value}
-            change={metric.change}
-            format={metric.format as any}
+        <MetricCard
+          title="P/L"
+          value={15.8}
+          change={1.6}
+          icon="chart"
+        />
+        <MetricCard
+          title="EV/EBITDA"
+          value={8.6}
+          change={0.7}
+          icon="chart"
+        />
+        <MetricCard
+          title="P/VPA"
+          value={2.3}
+          change={0.2}
+          icon="chart"
+        />
+        <MetricCard
+          title="ROIC"
+          value={12.5}
+          suffix="%"
+          format="percentage"
+          change={0.7}
+          icon="percentage"
+        />
+      </div>
+
+      <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle className="text-lg">Comparativo de Múltiplos</CardTitle>
+          <CardDescription>Comparação com setor e indústria</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChartCard
+            title=""
+            type="bar"
+            data={multiples}
+            xAxisDataKey="name"
+            categories={[
+              { key: 'company', name: 'Empresa', color: '#0D326F' },
+              { key: 'sector', name: 'Setor', color: '#8DA9C4' },
+              { key: 'industry', name: 'Indústria', color: '#134074' }
+            ]}
+            height={300}
           />
-        ))}
-      </div>
-      
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Métodos de Valuation</CardTitle>
-            <CardDescription>Comparação entre diferentes métodos</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="bg-slate-50 p-3 rounded-md">
-                <p className="text-sm font-medium">DCF</p>
-                <p className="text-xl font-bold">R$ 450 milhões</p>
-                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
-                  <div className="bg-finance-primary h-full" style={{width: '100%'}}></div>
-                </div>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-md">
-                <p className="text-sm font-medium">Múltiplos de Mercado</p>
-                <p className="text-xl font-bold">R$ 430 milhões</p>
-                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
-                  <div className="bg-finance-primary h-full" style={{width: '95%'}}></div>
-                </div>
-              </div>
-              <div className="bg-slate-50 p-3 rounded-md">
-                <p className="text-sm font-medium">Valor Patrimonial</p>
-                <p className="text-xl font-bold">R$ 380 milhões</p>
-                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
-                  <div className="bg-finance-primary h-full" style={{width: '84%'}}></div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Premissas-Chave</CardTitle>
-            <CardDescription>Parâmetros utilizados no valuation</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-sm">Taxa de Crescimento</span>
-                <span className="font-medium">9.5%</span>
-              </div>
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-sm">WACC</span>
-                <span className="font-medium">10.5%</span>
-              </div>
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-sm">Taxa Perpetuidade</span>
-                <span className="font-medium">2.5%</span>
-              </div>
-              <div className="flex justify-between border-b pb-2">
-                <span className="text-sm">Margem EBITDA</span>
-                <span className="font-medium">27.5%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">Dívida Líquida</span>
-                <span className="font-medium">R$ 85 milhões</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Benchmark de Múltiplos</CardTitle>
+          <CardDescription>Comparação da empresa com benchmark do mercado</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChartCard
+            title=""
+            type="bar"
+            data={multiplesBenchmark}
+            xAxisDataKey="name"
+            categories={[
+              { key: 'company', name: 'Empresa', color: '#0E9AA7' },
+              { key: 'benchmark', name: 'Benchmark', color: '#334E68' }
+            ]}
+            height={300}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 
   return (
-    <ModuleDashboard
-      title="Valuation"
+    <ModuleDashboard 
+      title="Valuation" 
       description="Avaliação por métodos de Fluxo de Caixa Descontado e múltiplos"
       tabs={[
-        { id: 'principal', label: 'Visão Geral', content: principalContent },
-        { id: 'dcf', label: 'DCF', content: dcfContent },
-        { id: 'multiplos', label: 'Múltiplos', content: multiplosContent },
-        { id: 'sensibilidade', label: 'Sensibilidade', content: sensibilidadeContent },
+        { id: 'dcf', label: 'Fluxo de Caixa Descontado', content: dcfDashboardContent },
+        { id: 'multiplos', label: 'Análise por Múltiplos', content: multiplosDashboardContent },
+        { id: 'relatorio', label: 'Relatório de Avaliação', content: <div>Conteúdo em desenvolvimento</div> }
       ]}
-    />
+    >
+      {dcfDashboardContent}
+    </ModuleDashboard>
   );
 };
 

@@ -1,147 +1,237 @@
 
 import React from 'react';
 import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
 
-// Mock data for market intelligence
-const commodityPrices = [
-  { id: 1, title: 'Petróleo Brent', value: 85.27, change: 2.3, suffix: ' USD' },
-  { id: 2, title: 'Minério de Ferro', value: 120.5, change: -1.8, suffix: ' USD/ton' },
-  { id: 3, title: 'Soja', value: 543.75, change: 1.2, suffix: ' USD/bushel' },
-  { id: 4, title: 'Açúcar', value: 0.21, change: 3.5, suffix: ' USD/lb' },
-  { id: 5, title: 'Cobre', value: 4.05, change: -0.7, suffix: ' USD/lb' },
-  { id: 6, title: 'Milho', value: 4.72, change: 0.5, suffix: ' USD/bushel' },
+// Mock data
+const commodityMetrics = [
+  { id: 1, title: 'Petróleo Brent', value: 85.4, change: 3.2, suffix: 'USD' },
+  { id: 2, title: 'Minério de Ferro', value: 120.7, change: 5.1, suffix: 'USD' },
+  { id: 3, title: 'Soja', value: 552.3, change: -1.8, suffix: 'USD' },
+  { id: 4, title: 'Milho', value: 175.8, change: -2.5, suffix: 'USD' },
 ];
 
-const oilPriceData = [
-  { data: 'Jan', brent: 79.10, wti: 74.30 },
-  { data: 'Fev', brent: 81.20, wti: 76.50 },
-  { data: 'Mar', brent: 80.80, wti: 75.90 },
-  { data: 'Abr', brent: 83.30, wti: 78.40 },
-  { data: 'Mai', brent: 84.70, wti: 79.80 },
-  { data: 'Jun', brent: 86.20, wti: 81.30 },
-  { data: 'Jul', brent: 85.90, wti: 80.70 },
-  { data: 'Ago', brent: 83.80, wti: 78.90 },
-  { data: 'Set', brent: 82.50, wti: 77.60 },
-  { data: 'Out', brent: 84.60, wti: 79.80 },
-  { data: 'Nov', brent: 85.10, wti: 80.30 },
-  { data: 'Dez', brent: 85.27, wti: 80.45 },
+const oilData = [
+  { mes: 'Jan', preco: 75.2 },
+  { mes: 'Fev', preco: 78.5 },
+  { mes: 'Mar', preco: 80.1 },
+  { mes: 'Abr', preco: 82.7 },
+  { mes: 'Mai', preco: 83.2 },
+  { mes: 'Jun', preco: 85.4 },
 ];
 
-const agriculturePriceData = [
-  { data: 'Jan', soja: 520, milho: 4.59, algodao: 80.2, cafe: 178.5 },
-  { data: 'Fev', soja: 525, milho: 4.62, algodao: 82.1, cafe: 183.2 },
-  { data: 'Mar', soja: 530, milho: 4.65, algodao: 81.8, cafe: 180.7 },
-  { data: 'Abr', soja: 528, milho: 4.63, algodao: 82.6, cafe: 184.5 },
-  { data: 'Mai', soja: 532, milho: 4.67, algodao: 83.4, cafe: 186.2 },
-  { data: 'Jun', soja: 536, milho: 4.70, algodao: 83.9, cafe: 187.8 },
-  { data: 'Jul', soja: 538, milho: 4.72, algodao: 84.1, cafe: 189.2 },
-  { data: 'Ago', soja: 540, milho: 4.73, algodao: 84.8, cafe: 190.5 },
-  { data: 'Set', soja: 541, milho: 4.71, algodao: 84.5, cafe: 189.8 },
-  { data: 'Out', soja: 542, milho: 4.70, algodao: 83.9, cafe: 188.3 },
-  { data: 'Nov', soja: 544, milho: 4.73, algodao: 84.2, cafe: 190.1 },
-  { data: 'Dez', soja: 543, milho: 4.72, algodao: 84.0, cafe: 189.5 },
+const ironData = [
+  { mes: 'Jan', preco: 105.3 },
+  { mes: 'Fev', preco: 108.7 },
+  { mes: 'Mar', preco: 112.4 },
+  { mes: 'Abr', preco: 115.6 },
+  { mes: 'Mai', preco: 118.9 },
+  { mes: 'Jun', preco: 120.7 },
 ];
 
-const logisticCostData = [
-  { rota: 'Santos -> Shanghai', conteiners: 3800, graneis: 32.5 },
-  { rota: 'Paranaguá -> Rotterdam', conteiners: 3650, graneis: 30.8 },
-  { rota: 'Itajaí -> Los Angeles', conteiners: 3250, graneis: 28.3 },
-  { rota: 'Rio Grande -> Dubai', conteiners: 4100, graneis: 35.2 },
-  { rota: 'Vitória -> Singapura', conteiners: 3950, graneis: 33.7 },
+const agriData = [
+  { mes: 'Jan', soja: 560.2, milho: 182.3 },
+  { mes: 'Fev', soja: 558.7, milho: 180.5 },
+  { mes: 'Mar', soja: 554.9, milho: 178.7 },
+  { mes: 'Abr', soja: 555.8, milho: 177.2 },
+  { mes: 'Mai', soja: 553.6, milho: 176.3 },
+  { mes: 'Jun', soja: 552.3, milho: 175.8 },
 ];
 
-const CommoditiesTab = () => (
-  <>
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {commodityPrices.map((commodity) => (
-        <MetricCard
-          key={commodity.id}
-          title={commodity.title}
-          value={commodity.value}
-          change={commodity.change}
-          suffix={commodity.suffix}
-        />
-      ))}
-    </div>
-    
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      <ChartCard
-        title="Evolução do Preço do Petróleo"
-        type="line"
-        data={oilPriceData}
-        xAxisDataKey="data"
-        categories={[
-          { key: 'brent', name: 'Brent (USD)', color: '#0D326F' },
-          { key: 'wti', name: 'WTI (USD)', color: '#F95738' },
-        ]}
-        info="Preços em USD por barril"
-      />
-      
-      <ChartCard
-        title="Preços de Commodities Agrícolas"
-        type="line"
-        data={agriculturePriceData}
-        xAxisDataKey="data"
-        categories={[
-          { key: 'soja', name: 'Soja (USD/bushel)', color: '#00A878' },
-          { key: 'cafe', name: 'Café (USD/lb)', color: '#3F72AF' },
-        ]}
-      />
-    </div>
-  </>
-);
+const freightData = [
+  { rota: 'Santos-Shanghai', valor: 38.5, variacao: 2.5 },
+  { rota: 'Santos-Rotterdam', valor: 27.8, variacao: 1.8 },
+  { rota: 'Paranaguá-Dubai', valor: 35.2, variacao: 3.1 },
+  { rota: 'Itajaí-Nova York', valor: 22.4, variacao: -0.5 },
+];
 
-const LogisticaTab = () => (
-  <>
-    <div className="mb-6">
-      <ChartCard
-        title="Custos Logísticos por Rota"
-        type="bar"
-        data={logisticCostData}
-        xAxisDataKey="rota"
-        categories={[
-          { key: 'conteiners', name: 'Contêineres (USD)', color: '#0E9AA7' },
-          { key: 'graneis', name: 'Granéis (USD/ton)', color: '#3F72AF' },
-        ]}
-        info="Custos de transporte marítimo por tipo de carga"
-        height={400}
-      />
+// Componente para o módulo de Inteligência de Mercado
+const MercadoModule = () => {
+  // Conteúdo da tab de Energia
+  const energiaContent = (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Evolução do Preço do Petróleo (Brent)</CardTitle>
+          <CardDescription>Últimos 6 meses (USD/barril)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: '300px' }}>
+            <ChartCard
+              title=""
+              type="line"
+              data={oilData}
+              xAxisDataKey="mes"
+              categories={[
+                { key: 'preco', name: 'Preço (USD)', color: '#0D326F' },
+              ]}
+              height={300}
+            />
+          </div>
+        </CardContent>
+      </Card>
     </div>
-    
-    <div className="grid gap-4 md:grid-cols-3">
-      <MetricCard
-        title="Índice de Frete Global"
-        value={2450}
-        change={3.2}
-        description="Baltic Dry Index"
-      />
-      <MetricCard
-        title="Lead Time Médio"
-        value={38}
-        description="Dias - Santos para Rotterdam"
-        suffix=" dias"
-      />
-      <MetricCard
-        title="Custo Médio Terrestre"
-        value={0.12}
-        description="Transporte rodoviário nacional"
-        suffix=" USD/ton/km"
-      />
-    </div>
-  </>
-);
+  );
 
-export default function MercadoModule() {
+  // Conteúdo da tab de Mineração
+  const mineracaoContent = (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Evolução do Preço do Minério de Ferro</CardTitle>
+          <CardDescription>Últimos 6 meses (USD/tonelada)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: '300px' }}>
+            <ChartCard
+              title=""
+              type="line"
+              data={ironData}
+              xAxisDataKey="mes"
+              categories={[
+                { key: 'preco', name: 'Preço (USD)', color: '#0D326F' },
+              ]}
+              height={300}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Conteúdo da tab de Agronegócio
+  const agroContent = (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Evolução do Preço de Commodities Agrícolas</CardTitle>
+          <CardDescription>Últimos 6 meses (USD/bushel)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: '300px' }}>
+            <ChartCard
+              title=""
+              type="line"
+              data={agriData}
+              xAxisDataKey="mes"
+              categories={[
+                { key: 'soja', name: 'Soja', color: '#0D326F' },
+                { key: 'milho', name: 'Milho', color: '#00A878' },
+              ]}
+              height={300}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Conteúdo da tab de Frete
+  const freteContent = (
+    <div className="space-y-6">
+      <div className="grid gap-4 grid-cols-1">
+        <Card>
+          <CardHeader>
+            <CardTitle>Custos de Frete Marítimo</CardTitle>
+            <CardDescription>Principais rotas (USD/container)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {freightData.map((freight, index) => (
+                <div key={index} className="flex justify-between items-center border-b pb-3">
+                  <div>
+                    <p className="font-medium">{freight.rota}</p>
+                    <p className="text-sm text-gray-500">USD {freight.valor}k / container</p>
+                  </div>
+                  <div className={`text-sm ${freight.variacao > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    {freight.variacao > 0 ? '+' : ''}{freight.variacao}%
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  // Conteúdo principal (overview)
+  const principalContent = (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {commodityMetrics.map((metric) => (
+          <MetricCard
+            key={metric.id}
+            title={metric.title}
+            value={metric.value}
+            change={metric.change}
+            suffix={metric.suffix}
+          />
+        ))}
+      </div>
+
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Energia</CardTitle>
+            <CardDescription>Preço do Petróleo Brent (USD/barril)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div style={{ height: '200px' }}>
+              <ChartCard
+                title=""
+                type="line"
+                data={oilData}
+                xAxisDataKey="mes"
+                categories={[
+                  { key: 'preco', name: 'Preço (USD)', color: '#0D326F' },
+                ]}
+                height={200}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Agronegócio</CardTitle>
+            <CardDescription>Preço da Soja (USD/bushel)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div style={{ height: '200px' }}>
+              <ChartCard
+                title=""
+                type="line"
+                data={agriData}
+                xAxisDataKey="mes"
+                categories={[
+                  { key: 'soja', name: 'Soja', color: '#0D326F' },
+                ]}
+                height={200}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   return (
-    <ModuleDashboard 
-      title="Módulo de Inteligência de Mercado" 
-      description="Análise de preços de commodities e custos logísticos"
+    <ModuleDashboard
+      title="Inteligência de Mercado"
+      description="Acompanhamento de preços de commodities e custos logísticos"
       tabs={[
-        { id: 'commodities', label: 'Commodities', content: <CommoditiesTab /> },
-        { id: 'logistica', label: 'Logística', content: <LogisticaTab /> },
+        { id: 'principal', label: 'Visão Geral', content: principalContent },
+        { id: 'energia', label: 'Energia', content: energiaContent },
+        { id: 'mineracao', label: 'Mineração', content: mineracaoContent },
+        { id: 'agro', label: 'Agronegócio', content: agroContent },
+        { id: 'frete', label: 'Frete', content: freteContent },
       ]}
     />
   );
-}
+};
+
+export default MercadoModule;

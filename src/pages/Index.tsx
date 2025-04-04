@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
 import { BarChart3, LineChart, TrendingUp, Globe, BarChart } from "lucide-react";
+import { InstructionsCard } from '@/components/dashboard/InstructionsCard';
+import { CustomizationCard } from '@/components/dashboard/CustomizationCard';
 
 // Mock data for the dashboard overview
 const dashboardMetrics = [
@@ -67,7 +69,7 @@ const Index = () => {
   return (
     <DashboardLayout
       title="Plataforma Integrada de Inteligência Financeira"
-      description="Dashboard com visão geral dos principais indicadores"
+      description="Dashboard com visão consolidada dos principais indicadores"
     >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         {dashboardMetrics.map((metric) => (
@@ -142,6 +144,11 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 mb-8">
+        <InstructionsCard />
+        <CustomizationCard />
       </div>
 
       <h2 className="text-2xl font-bold mt-8 mb-4">Módulos da Plataforma</h2>

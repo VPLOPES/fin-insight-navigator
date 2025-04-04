@@ -1,158 +1,261 @@
 
 import React from 'react';
 import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
 
-// Mock data for a financial valuation
+// Mock data
 const valuationMetrics = [
-  { id: 1, title: 'Valor da Empresa (EV)', value: 124500000, format: 'currency' },
-  { id: 2, title: 'Valor de Mercado', value: 98700000, format: 'currency' },
-  { id: 3, title: 'EV/EBITDA', value: 8.4, change: -0.3 },
-  { id: 4, title: 'P/L', value: 12.3, change: 0.8 },
-  { id: 5, title: 'WACC', value: 10.5, format: 'percentage', suffix: '%' },
-  { id: 6, title: 'Taxa de Crescimento Perpetuidade', value: 3.5, format: 'percentage', suffix: '%' },
+  { id: 1, title: 'Valor da Empresa', value: 450000000, format: 'currency' },
+  { id: 2, title: 'Valor por Ação', value: 45.8, change: 5.2 },
+  { id: 3, title: 'P/L', value: 12.5, change: -1.8 },
+  { id: 4, title: 'EV/EBITDA', value: 8.7, change: -0.5 },
 ];
 
 const dcfData = [
-  { ano: '2025', fluxoCaixa: 4200000, fluxoDescontado: 3800000 },
-  { ano: '2026', fluxoCaixa: 4500000, fluxoDescontado: 3700000 },
-  { ano: '2027', fluxoCaixa: 4900000, fluxoDescontado: 3600000 },
-  { ano: '2028', fluxoCaixa: 5300000, fluxoDescontado: 3500000 },
-  { ano: '2029', fluxoCaixa: 5800000, fluxoDescontado: 3400000 },
-  { ano: 'Valor Terminal', fluxoCaixa: 105000000, fluxoDescontado: 62000000 },
+  { ano: '2024', fluxo: 42500000 },
+  { ano: '2025', fluxo: 46800000 },
+  { ano: '2026', fluxo: 51400000 },
+  { ano: '2027', fluxo: 56500000 },
+  { ano: '2028', fluxo: 62100000 },
+  { ano: 'Perpetuidade', fluxo: 310500000 },
 ];
 
-const sensibilityWACC = [
-  { wacc: '9.5%', valor: 135000000 },
-  { wacc: '10.0%', valor: 129800000 },
-  { wacc: '10.5%', valor: 124500000 },
-  { wacc: '11.0%', valor: 119700000 },
-  { wacc: '11.5%', valor: 115200000 },
+const multiplosData = [
+  { empresa: 'Empresa A', pl: 14.2, evebitda: 9.5 },
+  { empresa: 'Empresa B', pl: 12.8, evebitda: 8.2 },
+  { empresa: 'Empresa C', pl: 11.5, evebitda: 7.8 },
+  { empresa: 'Empresa D', pl: 13.7, evebitda: 9.1 },
+  { empresa: 'Empresa E', pl: 10.9, evebitda: 7.3 },
+  { empresa: 'Média', pl: 12.6, evebitda: 8.4 },
+  { empresa: 'Sua Empresa', pl: 12.5, evebitda: 8.7 },
 ];
 
-const sensibilityGrowth = [
-  { growth: '2.5%', valor: 115000000 },
-  { growth: '3.0%', valor: 119800000 },
-  { growth: '3.5%', valor: 124500000 },
-  { growth: '4.0%', valor: 130000000 },
-  { growth: '4.5%', valor: 136200000 },
+const sensibilidadeData = [
+  { wacc: '10.0%', g: '2.0%', valor: 412500000 },
+  { wacc: '10.0%', g: '2.5%', valor: 425000000 },
+  { wacc: '10.0%', g: '3.0%', valor: 437500000 },
+  { wacc: '10.5%', g: '2.0%', valor: 400000000 },
+  { wacc: '10.5%', g: '2.5%', valor: 412500000 },
+  { wacc: '10.5%', g: '3.0%', valor: 425000000 },
+  { wacc: '11.0%', g: '2.0%', valor: 387500000 },
+  { wacc: '11.0%', g: '2.5%', valor: 400000000 },
+  { wacc: '11.0%', g: '3.0%', valor: 412500000 },
 ];
 
-const multiplesBenchmark = [
-  { empresa: 'Empresa A', evEbitda: 7.8, pl: 11.5, roic: 18.3 },
-  { empresa: 'Empresa B', evEbitda: 8.2, pl: 12.7, roic: 16.8 },
-  { empresa: 'Empresa C', evEbitda: 9.5, pl: 14.2, roic: 15.3 },
-  { empresa: 'Sua Empresa', evEbitda: 8.4, pl: 12.3, roic: 17.5 },
-  { empresa: 'Empresa D', evEbitda: 7.6, pl: 11.9, roic: 16.2 },
-  { empresa: 'Empresa E', evEbitda: 8.9, pl: 13.5, roic: 14.8 },
-];
-
-const DCFTab = () => (
-  <>
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {valuationMetrics.map((metric) => (
-        <MetricCard
-          key={metric.id}
-          title={metric.title}
-          value={metric.value}
-          change={metric.change}
-          format={metric.format as any}
-          suffix={metric.suffix}
-          info={metric.info}
-        />
-      ))}
-    </div>
-    
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      <ChartCard
-        title="Projeção de Fluxo de Caixa Descontado"
-        type="bar"
-        data={dcfData}
-        xAxisDataKey="ano"
-        categories={[
-          { key: 'fluxoCaixa', name: 'Fluxo de Caixa', color: '#3F72AF' },
-          { key: 'fluxoDescontado', name: 'Fluxo Descontado', color: '#0D326F' },
-        ]}
-      />
+// Componente para o módulo de Valuation
+const ValuationModule = () => {
+  // Conteúdo da tab de DCF
+  const dcfContent = (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <MetricCard title="Taxa de Crescimento" value={9.5} suffix="%" />
+        <MetricCard title="WACC" value={10.5} suffix="%" />
+        <MetricCard title="Taxa Perpetuidade" value={2.5} suffix="%" />
+        <MetricCard title="Valor Terminal" value={310500000} format="currency" />
+      </div>
       
-      <ChartCard
-        title="Análise de Sensibilidade - WACC"
-        type="line"
-        data={sensibilityWACC}
-        xAxisDataKey="wacc"
-        categories={[
-          { key: 'valor', name: 'Valor da Empresa', color: '#0E9AA7' },
-        ]}
-        info="Impacto da variação do WACC no valor da empresa"
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle>Fluxo de Caixa Projetado</CardTitle>
+          <CardDescription>Valores em reais</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: '300px' }}>
+            <ChartCard
+              title=""
+              type="bar"
+              data={dcfData}
+              xAxisDataKey="ano"
+              categories={[
+                { key: 'fluxo', name: 'Fluxo de Caixa', color: '#0D326F' },
+              ]}
+              height={300}
+            />
+          </div>
+        </CardContent>
+      </Card>
     </div>
+  );
 
-    <div className="mt-6">
-      <ChartCard
-        title="Análise de Sensibilidade - Taxa de Crescimento na Perpetuidade"
-        type="area"
-        data={sensibilityGrowth}
-        xAxisDataKey="growth"
-        categories={[
-          { key: 'valor', name: 'Valor da Empresa', color: '#00A878' },
-        ]}
-        info="Impacto da variação da taxa de crescimento na perpetuidade no valor da empresa"
-      />
+  // Conteúdo da tab de Múltiplos
+  const multiplosContent = (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Comparação de Múltiplos</CardTitle>
+          <CardDescription>Comparativo com empresas do setor</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left border-b">
+                  <th className="pb-2 font-medium text-sm">Empresa</th>
+                  <th className="pb-2 font-medium text-sm">P/L</th>
+                  <th className="pb-2 font-medium text-sm">EV/EBITDA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {multiplosData.map((item, index) => (
+                  <tr 
+                    key={index} 
+                    className={`border-b ${item.empresa === 'Sua Empresa' ? 'bg-slate-50' : ''} ${item.empresa === 'Média' ? 'font-medium' : ''}`}
+                  >
+                    <td className="py-2">{item.empresa}</td>
+                    <td className="py-2">{item.pl.toFixed(1)}</td>
+                    <td className="py-2">{item.evebitda.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  </>
-);
+  );
 
-const MultiplosTab = () => (
-  <>
-    <div className="mb-6">
-      <ChartCard
-        title="Análise de Múltiplos de Mercado"
-        type="bar"
-        data={multiplesBenchmark}
-        xAxisDataKey="empresa"
-        categories={[
-          { key: 'evEbitda', name: 'EV/EBITDA', color: '#0D326F' },
-          { key: 'pl', name: 'P/L', color: '#0E9AA7' },
-          { key: 'roic', name: 'ROIC (%)', color: '#00A878' },
-        ]}
-        info="Comparação com empresas do setor"
-        height={400}
-      />
+  // Conteúdo da tab de Sensibilidade
+  const sensibilidadeContent = (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Análise de Sensibilidade</CardTitle>
+          <CardDescription>Impacto de WACC e Taxa de Crescimento no Valor</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left border-b">
+                  <th className="pb-2 font-medium text-sm">WACC / g</th>
+                  <th className="pb-2 font-medium text-sm">g = 2.0%</th>
+                  <th className="pb-2 font-medium text-sm">g = 2.5%</th>
+                  <th className="pb-2 font-medium text-sm">g = 3.0%</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 font-medium">10.0%</td>
+                  <td className="py-2">R$ 412.5M</td>
+                  <td className="py-2">R$ 425.0M</td>
+                  <td className="py-2">R$ 437.5M</td>
+                </tr>
+                <tr className="border-b bg-slate-50">
+                  <td className="py-2 font-medium">10.5%</td>
+                  <td className="py-2">R$ 400.0M</td>
+                  <td className="py-2">R$ 412.5M</td>
+                  <td className="py-2">R$ 425.0M</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 font-medium">11.0%</td>
+                  <td className="py-2">R$ 387.5M</td>
+                  <td className="py-2">R$ 400.0M</td>
+                  <td className="py-2">R$ 412.5M</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-    
-    <div className="grid gap-4 md:grid-cols-3">
-      <MetricCard
-        title="Valor por EV/EBITDA"
-        value={121800000}
-        description="Baseado na média do setor (8.2x)"
-        format="currency"
-      />
-      <MetricCard
-        title="Valor por P/L"
-        value={118500000}
-        description="Baseado na média do setor (12.7x)"
-        format="currency"
-      />
-      <MetricCard
-        title="Valor Médio por Múltiplos"
-        value={120150000}
-        description="Média dos métodos de valuation por múltiplos"
-        format="currency"
-      />
-    </div>
-  </>
-);
+  );
 
-export default function ValuationModule() {
+  // Conteúdo principal (overview)
+  const principalContent = (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {valuationMetrics.map((metric) => (
+          <MetricCard
+            key={metric.id}
+            title={metric.title}
+            value={metric.value}
+            change={metric.change}
+            format={metric.format as any}
+          />
+        ))}
+      </div>
+      
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Métodos de Valuation</CardTitle>
+            <CardDescription>Comparação entre diferentes métodos</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="bg-slate-50 p-3 rounded-md">
+                <p className="text-sm font-medium">DCF</p>
+                <p className="text-xl font-bold">R$ 450 milhões</p>
+                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
+                  <div className="bg-finance-primary h-full" style={{width: '100%'}}></div>
+                </div>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-md">
+                <p className="text-sm font-medium">Múltiplos de Mercado</p>
+                <p className="text-xl font-bold">R$ 430 milhões</p>
+                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
+                  <div className="bg-finance-primary h-full" style={{width: '95%'}}></div>
+                </div>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-md">
+                <p className="text-sm font-medium">Valor Patrimonial</p>
+                <p className="text-xl font-bold">R$ 380 milhões</p>
+                <div className="w-full bg-slate-200 h-2 mt-2 rounded-full overflow-hidden">
+                  <div className="bg-finance-primary h-full" style={{width: '84%'}}></div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Premissas-Chave</CardTitle>
+            <CardDescription>Parâmetros utilizados no valuation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-sm">Taxa de Crescimento</span>
+                <span className="font-medium">9.5%</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-sm">WACC</span>
+                <span className="font-medium">10.5%</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-sm">Taxa Perpetuidade</span>
+                <span className="font-medium">2.5%</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-sm">Margem EBITDA</span>
+                <span className="font-medium">27.5%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Dívida Líquida</span>
+                <span className="font-medium">R$ 85 milhões</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
   return (
-    <ModuleDashboard 
-      title="Módulo de Valuation" 
-      description="Avaliação da empresa por diferentes metodologias"
+    <ModuleDashboard
+      title="Valuation"
+      description="Avaliação por métodos de Fluxo de Caixa Descontado e múltiplos"
       tabs={[
-        { id: 'dcf', label: 'Fluxo de Caixa Descontado', content: <DCFTab /> },
-        { id: 'multiplos', label: 'Análise por Múltiplos', content: <MultiplosTab /> },
+        { id: 'principal', label: 'Visão Geral', content: principalContent },
+        { id: 'dcf', label: 'DCF', content: dcfContent },
+        { id: 'multiplos', label: 'Múltiplos', content: multiplosContent },
+        { id: 'sensibilidade', label: 'Sensibilidade', content: sensibilidadeContent },
       ]}
     />
   );
-}
+};
+
+export default ValuationModule;

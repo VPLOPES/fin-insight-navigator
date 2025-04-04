@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom finance platform colors
+				finance: {
+					primary: '#0D326F',     // Navy blue
+					secondary: '#0E9AA7',   // Teal
+					accent: '#3F72AF',      // Lighter blue
+					positive: '#00A878',    // Green for positive values
+					negative: '#F95738',    // Red for negative values
+					neutral: '#F8F9FA',     // Light background
+					'text-primary': '#2D3748', // Dark text
+					'text-secondary': '#718096', // Medium text
 				}
 			},
 			borderRadius: {

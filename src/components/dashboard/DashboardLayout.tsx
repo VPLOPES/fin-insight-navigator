@@ -1,4 +1,3 @@
-
 import React, { ReactNode } from 'react';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from './AppSidebar';
@@ -7,18 +6,21 @@ import { RaLogo } from './RaLogo';
 import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
-
 interface DashboardLayoutProps {
   children?: ReactNode;
   title: string;
   description?: string;
 }
-
-export function DashboardLayout({ children, title, description }: DashboardLayoutProps) {
-  const { theme, setTheme } = useTheme();
-
-  return (
-    <SidebarProvider>
+export function DashboardLayout({
+  children,
+  title,
+  description
+}: DashboardLayoutProps) {
+  const {
+    theme,
+    setTheme
+  } = useTheme();
+  return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -26,17 +28,10 @@ export function DashboardLayout({ children, title, description }: DashboardLayou
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-finance-primary">{title}</h1>
-                {description && (
-                  <p className="text-muted-foreground mt-1">{description}</p>
-                )}
+                {description && <p className="mt-1 text-base font-semibold text-slate-50">{description}</p>}
               </div>
               <div className="flex items-center space-x-4">
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-                  className="rounded-full"
-                >
+                <Button variant="outline" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full">
                   {theme === 'dark' ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
                   <span className="sr-only">Alternar tema</span>
                 </Button>
@@ -59,36 +54,30 @@ export function DashboardLayout({ children, title, description }: DashboardLayou
           </footer>
         </div>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
-
-export function ModuleDashboard({ 
-  children, 
-  title, 
+export function ModuleDashboard({
+  children,
+  title,
   description,
-  tabs = [] 
-}: DashboardLayoutProps & { tabs?: { id: string, label: string, content: ReactNode }[] }) {
-  return (
-    <DashboardLayout title={title} description={description}>
-      {tabs.length > 0 ? (
-        <Tabs defaultValue={tabs[0].id} className="space-y-6">
+  tabs = []
+}: DashboardLayoutProps & {
+  tabs?: {
+    id: string;
+    label: string;
+    content: ReactNode;
+  }[];
+}) {
+  return <DashboardLayout title={title} description={description}>
+      {tabs.length > 0 ? <Tabs defaultValue={tabs[0].id} className="space-y-6">
           <TabsList className="bg-muted/50 p-1">
-            {tabs.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id} className="data-[state=active]:bg-white dark:data-[state=active]:bg-muted data-[state=active]:shadow-sm">
+            {tabs.map(tab => <TabsTrigger key={tab.id} value={tab.id} className="data-[state=active]:bg-white dark:data-[state=active]:bg-muted data-[state=active]:shadow-sm">
                 {tab.label}
-              </TabsTrigger>
-            ))}
+              </TabsTrigger>)}
           </TabsList>
-          {tabs.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id} className="space-y-6">
+          {tabs.map(tab => <TabsContent key={tab.id} value={tab.id} className="space-y-6">
               {tab.content}
-            </TabsContent>
-          ))}
-        </Tabs>
-      ) : (
-        children
-      )}
-    </DashboardLayout>
-  );
+            </TabsContent>)}
+        </Tabs> : children}
+    </DashboardLayout>;
 }

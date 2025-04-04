@@ -6,21 +6,22 @@ import { RaLogo } from './RaLogo';
 import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
+
 interface DashboardLayoutProps {
   children?: ReactNode;
   title: string;
   description?: string;
 }
+
 export function DashboardLayout({
   children,
   title,
   description
 }: DashboardLayoutProps) {
-  const {
-    theme,
-    setTheme
-  } = useTheme();
-  return <SidebarProvider>
+  const { theme, setTheme } = useTheme();
+  
+  return (
+    <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -28,7 +29,7 @@ export function DashboardLayout({
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-finance-primary">{title}</h1>
-                {description && <p className="mt-1 text-base font-semibold text-slate-50">{description}</p>}
+                {description && <p className="mt-1 text-base font-medium text-muted-foreground">{description}</p>}
               </div>
               <div className="flex items-center space-x-4">
                 <Button variant="outline" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="rounded-full">
@@ -54,8 +55,10 @@ export function DashboardLayout({
           </footer>
         </div>
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 }
+
 export function ModuleDashboard({
   children,
   title,

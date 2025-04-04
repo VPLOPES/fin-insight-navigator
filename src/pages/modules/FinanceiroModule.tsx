@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { ModuleDashboard } from '@/components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,12 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
 import { ChartLoading } from '@/components/dashboard/ChartLoading';
+import { CapabilitiesSection } from '@/components/dashboard/CapabilityCard';
 import { formatCurrency } from '@/lib/chart-utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 
-// Mock data
 const financialMetrics = [
   { id: 1, title: 'Receita Líquida', value: 45800000, change: 8.5, format: 'currency' },
   { id: 2, title: 'EBITDA', value: 12500000, change: 12.3, format: 'currency' },
@@ -45,7 +44,6 @@ const debtData = [
   { name: 'LP', value: 75 },
 ];
 
-// Componente para o módulo Financeiro Corporativo
 const FinanceiroModule = () => {
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
   const [dataYear, setDataYear] = useState<'2023' | '2024'>('2024');
@@ -68,7 +66,6 @@ const FinanceiroModule = () => {
     });
   }, []);
 
-  // Página de Rentabilidade
   const rentabilidadeContent = (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
@@ -106,7 +103,6 @@ const FinanceiroModule = () => {
     </div>
   );
 
-  // Página de Liquidez
   const liquidezContent = (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-1">
@@ -134,7 +130,6 @@ const FinanceiroModule = () => {
     </div>
   );
 
-  // Página de Endividamento
   const endividamentoContent = (
     <div className="space-y-6">
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
@@ -186,10 +181,9 @@ const FinanceiroModule = () => {
     </div>
   );
 
-  // Conteúdo principal (overview)
   const principalContent = (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-8">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {financialMetrics.map((metric) => (
           <MetricCard
             key={metric.id}
@@ -201,6 +195,8 @@ const FinanceiroModule = () => {
           />
         ))}
       </div>
+
+      <CapabilitiesSection />
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">

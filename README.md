@@ -1,15 +1,15 @@
 
-# Fin-Insight Navigator
+# RA Finanças Corporativas
 
-Fin-Insight Navigator é uma plataforma avançada de inteligência financeira projetada para proporcionar análises detalhadas, visualizações e ferramentas para gestão financeira corporativa, valuation, análise macroeconômica, monitoramento de mercado e modelagem financeira.
+RA Finanças Corporativas é uma plataforma avançada de inteligência financeira projetada para proporcionar análises detalhadas, visualizações e ferramentas para gestão financeira corporativa, valuation, análise macroeconômica, monitoramento de mercado e modelagem financeira.
 
-![Fin-Insight Navigator Logo](public/placeholder.svg)
+![RA Logo](public/LOGO_completo_branco.png)
 
 ## 📊 Recursos Principais
 
 A plataforma está organizada em cinco módulos principais:
 
-### 1. Financeiro Corporativo
+### 1. Finanças Corporativas
 
 Módulo com ferramentas avançadas para gestão financeira empresarial incluindo:
 
@@ -67,7 +67,7 @@ Este projeto foi desenvolvido com as seguintes tecnologias:
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Recharts](https://recharts.org/) para visualizações de dados
-- [React Router](https://reactrouter.com/) para navegação
+- [React Router0](https://reactrouter.com/) para navegação
 - [Tanstack React Query](https://tanstack.com/query) para gerenciamento de estado e requisições
 
 ## 🛠️ Instalação e Uso
@@ -79,7 +79,7 @@ Para executar este projeto localmente:
 git clone <URL_DO_REPOSITÓRIO>
 
 # Entre no diretório do projeto
-cd fin-insight-navigator
+cd ra-financas-corporativas
 
 # Instale as dependências
 npm install
@@ -92,7 +92,7 @@ A aplicação estará disponível em `http://localhost:8080`.
 
 ## 📝 Personalização
 
-O Fin-Insight Navigator foi projetado para ser altamente customizável:
+O RA Finanças Corporativas foi projetado para ser altamente customizável:
 
 - **Fontes de Dados**: Modifique os arquivos na pasta `modules` para conectar com suas próprias fontes de dados.
 - **Novas Funcionalidades**: A estrutura modular permite adicionar novos módulos conforme necessário.
@@ -106,14 +106,6 @@ Para realizar o deploy da aplicação:
 2. O resultado do build estará na pasta `dist` 
 3. Implante os arquivos em um serviço de hospedagem de sua preferência
 
-## 📄 Licença
-
-[MIT](LICENSE)
-
-## 👥 Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues para melhorar este projeto.
-
----
-
-Desenvolvido com ❤️ usando [Lovable](https://lovable.dev)
+## 👥 Contato
+ 
+[Vinicius Lopes](viniciuslopesp12@gmail.com)

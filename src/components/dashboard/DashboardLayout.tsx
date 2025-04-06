@@ -48,7 +48,7 @@ export function DashboardLayout({
           <footer className="bg-card border-t border-border py-3 px-6">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} Fin-Insight Navigator • Plataforma de Inteligência Financeira
+                © {new Date().getFullYear()} RA Financas Corporativas • Plataforma de Inteligência Financeira
               </p>
               <RaLogo variant="full" size="sm" />
             </div>

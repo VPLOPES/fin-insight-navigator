@@ -51,7 +51,7 @@ export function AppSidebar() {
         <div className="flex items-center">
           <RaLogo variant="full" size="md" />
           <div className="ml-2 text-lg font-bold text-white truncate">
-            Fin-Insight
+            RA Finanças Corporativas
           </div>
         </div>
         <div className="ml-auto">

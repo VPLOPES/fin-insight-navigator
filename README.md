@@ -1,73 +1,119 @@
-# Welcome to your Lovable project
 
-## Project info
+# Fin-Insight Navigator
 
-**URL**: https://lovable.dev/projects/79f0879b-b396-4b14-9805-d52907b4419d
+Fin-Insight Navigator é uma plataforma avançada de inteligência financeira projetada para proporcionar análises detalhadas, visualizações e ferramentas para gestão financeira corporativa, valuation, análise macroeconômica, monitoramento de mercado e modelagem financeira.
 
-## How can I edit this code?
+![Fin-Insight Navigator Logo](public/placeholder.svg)
 
-There are several ways of editing your application.
+## 📊 Recursos Principais
 
-**Use Lovable**
+A plataforma está organizada em cinco módulos principais:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/79f0879b-b396-4b14-9805-d52907b4419d) and start prompting.
+### 1. Financeiro Corporativo
 
-Changes made via Lovable will be committed automatically to this repo.
+Módulo com ferramentas avançadas para gestão financeira empresarial incluindo:
 
-**Use your preferred IDE**
+- **Demonstrações Contábeis Automatizadas**: Geração automática de DRE, Balanço Patrimonial e DFC.
+- **Fluxo de Caixa e Relatórios de Tesouraria**: Monitoramento e projeção de fluxo de caixa.
+- **Consolidação Financeira**: Centralização de dados financeiros de múltiplas empresas.
+- **Monitor de Indicadores Personalizados**: Criação e acompanhamento de KPIs específicos.
+- **Criação de Orçamento**: Elaboração e monitoramento de orçamentos.
+- **Dashboards de Performance**: Painéis interativos com dados financeiros atualizados.
+- **Simulação de Cenários**: Análise de múltiplos cenários financeiros.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 2. Valuation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Ferramentas para avaliação e valoração de empresas:
 
-Follow these steps:
+- Métodos múltiplos de valuation
+- Análise de DCF (Discounted Cash Flow)
+- Comparativos setoriais
+- Modelagem de cenários
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 3. Análise Macroeconômica
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Visualização e análise de indicadores macroeconômicos:
 
-# Step 3: Install the necessary dependencies.
-npm i
+- Monitoramento de indicadores-chave
+- Tendências econômicas
+- Análise de impacto em diferentes setores
+- Previsões baseadas em dados históricos
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 4. Inteligência de Mercado
+
+Ferramentas para acompanhamento de mercados:
+
+- Monitoramento de preços de commodities
+- Análise de concorrência
+- Tendências setoriais
+- Oportunidades de mercado
+
+### 5. Modelagem Financeira
+
+Recursos avançados para criação de modelos financeiros:
+
+- Templates de modelos pré-configurados
+- Ferramentas de previsão
+- Análises de sensibilidade
+- Integração com dados reais
+
+## 🚀 Tecnologias
+
+Este projeto foi desenvolvido com as seguintes tecnologias:
+
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Recharts](https://recharts.org/) para visualizações de dados
+- [React Router](https://reactrouter.com/) para navegação
+- [Tanstack React Query](https://tanstack.com/query) para gerenciamento de estado e requisições
+
+## 🛠️ Instalação e Uso
+
+Para executar este projeto localmente:
+
+```bash
+# Clone o repositório
+git clone <URL_DO_REPOSITÓRIO>
+
+# Entre no diretório do projeto
+cd fin-insight-navigator
+
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+A aplicação estará disponível em `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📝 Personalização
 
-**Use GitHub Codespaces**
+O Fin-Insight Navigator foi projetado para ser altamente customizável:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Fontes de Dados**: Modifique os arquivos na pasta `modules` para conectar com suas próprias fontes de dados.
+- **Novas Funcionalidades**: A estrutura modular permite adicionar novos módulos conforme necessário.
+- **Customização Visual**: Utilizando Tailwind CSS, você pode facilmente adaptar o visual da plataforma à identidade da sua empresa.
 
-## What technologies are used for this project?
+## 🌐 Deploy
 
-This project is built with:
+Para realizar o deploy da aplicação:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Execute o build da aplicação: `npm run build`
+2. O resultado do build estará na pasta `dist` 
+3. Implante os arquivos em um serviço de hospedagem de sua preferência
 
-## How can I deploy this project?
+## 📄 Licença
 
-Simply open [Lovable](https://lovable.dev/projects/79f0879b-b396-4b14-9805-d52907b4419d) and click on Share -> Publish.
+[MIT](LICENSE)
 
-## Can I connect a custom domain to my Lovable project?
+## 👥 Contribuição
 
-Yes it is!
+Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues para melhorar este projeto.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Desenvolvido com ❤️ usando [Lovable](https://lovable.dev)

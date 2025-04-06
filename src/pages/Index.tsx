@@ -66,6 +66,9 @@ const modules = [
 ];
 
 const Index = () => {
+  // For GitHub Pages compatibility
+  const basePath = '';
+  
   return (
     <DashboardLayout
       title="Plataforma Integrada de Inteligência Financeira"

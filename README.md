@@ -67,7 +67,7 @@ Este projeto foi desenvolvido com as seguintes tecnologias:
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Recharts](https://recharts.org/) para visualizações de dados
-- [React Router](https://reactrouter.com/) para navegação
+- [React Router0](https://reactrouter.com/) para navegação
 - [Tanstack React Query](https://tanstack.com/query) para gerenciamento de estado e requisições
 
 ## 🛠️ Instalação e Uso
@@ -92,7 +92,7 @@ A aplicação estará disponível em `http://localhost:8080`.
 
 ## 📝 Personalização
 
-O Fin-Insight Navigator foi projetado para ser altamente customizável:
+O RA Finanças Corporativas foi projetado para ser altamente customizável:
 
 - **Fontes de Dados**: Modifique os arquivos na pasta `modules` para conectar com suas próprias fontes de dados.
 - **Novas Funcionalidades**: A estrutura modular permite adicionar novos módulos conforme necessário.
@@ -106,10 +106,6 @@ Para realizar o deploy da aplicação:
 2. O resultado do build estará na pasta `dist` 
 3. Implante os arquivos em um serviço de hospedagem de sua preferência
 
-## 📄 Licença
-
-[MIT](LICENSE)
-
-## 👥 Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues para melhorar este projeto.
+## 👥 Contato
+ 
+[Vinicius Lopes](viniciuslopesp12@gmail.com)

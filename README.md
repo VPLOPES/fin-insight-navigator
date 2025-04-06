@@ -1,15 +1,15 @@
 
-# Fin-Insight Navigator
+# RA Finanças Corporativas
 
-Fin-Insight Navigator é uma plataforma avançada de inteligência financeira projetada para proporcionar análises detalhadas, visualizações e ferramentas para gestão financeira corporativa, valuation, análise macroeconômica, monitoramento de mercado e modelagem financeira.
+RA Finanças Corporativas é uma plataforma avançada de inteligência financeira projetada para proporcionar análises detalhadas, visualizações e ferramentas para gestão financeira corporativa, valuation, análise macroeconômica, monitoramento de mercado e modelagem financeira.
 
-![Fin-Insight Navigator Logo](public/placeholder.svg)
+![RA Logo](public/LOGO_completo_branco.png)
 
 ## 📊 Recursos Principais
 
 A plataforma está organizada em cinco módulos principais:
 
-### 1. Financeiro Corporativo
+### 1. Finanças Corporativas
 
 Módulo com ferramentas avançadas para gestão financeira empresarial incluindo:
 
@@ -113,7 +113,3 @@ Para realizar o deploy da aplicação:
 ## 👥 Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues para melhorar este projeto.
-
----
-
-Desenvolvido com ❤️ usando [Lovable](https://lovable.dev)
